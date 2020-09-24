@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iris classification</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script lang="js">
+        async function run(){
+            const csvUrl = "iris.csv"
+            const trainingDataset = tf.data.csv(csvUrl,{
+               columnConfigs:{
+                   species:{
+                       isLabel: true
+                   }
+               }
+            });
+            const columnNames = await trainingDataset.columnNames()
+            const numOfFeatures = (columnNames).length - 1;
+            const numOfSamples = 150;
+            // how batching works
+            // const a = tf.data.array([4, 5, 6]);
+            // await a.forEachAsync(e => console.log(e));
+            // const a = tf.data.array([1, 2, 3, 4, 5, 6, 7, 8]).batch(4);
+            // await a.forEachAsync(e => e.print());
+            //await trainingDataset.forEachAsync(e => console.log(e));
+            const convertedDataSet =
+                trainingDataset.map(({xs, ys}) => {
+                    const labels = [
+                        ys.species === "setosa" ? 1 : 0,
+                        ys.species === "virginica" ? 1 : 0,
+                        ys.species === "versicolor" ? 1 : 0
+                    ]
+                    return{ xs: Object.values(xs), ys: Object.values(labels)};
+                }).batch(10);
+
+            await convertedDataSet.forEachAsync(e => console.log(e));
+            // create model
+            const model = tf.sequential();
+            model.add(tf.layers.dense({inputShape: [numOfFeatures], activation: "sigmoid", units: 5}));
+            model.add(tf.layers.dense({activation: "softmax", units: 3}));
+            model.compile({loss: "categoricalCrossentropy", optimizer: tf.train.adam(0.06)});
+
+            // train model
+            await model.fitDataset(convertedDataSet,
+                {epochs:100,
+                    callbacks:{
+                        onEpochEnd: async(epoch, logs) =>{
+                            console.log("Epoch: " + epoch + " Loss: " + logs.loss);
+                        }
+                    }});
+
+            // making inference
+            // grab an example
+            const testVal = tf.tensor2d([4.4, 2.9, 1.4, 0.2], [1, 4]);// Setosa
+            // make the prediction
+            const prediction = model.predict(testVal);
+            // obtain the index of the highest prediction
+            const pIndex = tf.argMax(prediction, axis=1).dataSync();
+            // print the class name
+            const classNames = ["Setosa", "Virginica", "Versicolor"];
+            alert(classNames[pIndex])
+        }
+        run();
+    </script>
+</head>
+<body>
+
+</body>
+</html>

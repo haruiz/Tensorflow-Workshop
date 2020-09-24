@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hand write digits classify</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+    <style>
+        canvas{
+            cursor: crosshair;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;            
+            height: 100%;                        
+        }
+        button{
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="center">
+    <canvas width="280" height="280" id="canvas"></canvas>        
+</div>
+<div class="center">
+    <button id="btnClassify">classify</button>    
+    <button id="btnClear">clear</button>
+    <button id="btnTrain">train</button>
+    <button id="btnDownload">download</button>
+</div>
+<script src="script.js" type="module"></script>
+</body>
+</html>
