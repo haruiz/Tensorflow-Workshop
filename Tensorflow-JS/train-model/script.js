@@ -1,6 +1,4 @@
 import DrawableCanvas from "./canvas.js";
-import MNISTClassifier from "./mnits-classifier.js";
-import FFMnistClassifier from "./fashion-classifier.js";
 import FMnistClassifier from "./fashion-classifier.js";
 
 const btnClear = document.getElementById("btnClear");
@@ -10,8 +8,7 @@ const btnDownload = document.getElementById("btnDownload");
    
 
 const main = ()=>{
-    const canvas = new DrawableCanvas(document.getElementById("canvas"));
-    //const model = new MNISTClassifier();
+    const canvas = new DrawableCanvas(document.getElementById("canvas"));    
     const model = new FMnistClassifier();
     
     btnClear.onclick =()=> canvas.clear();   
